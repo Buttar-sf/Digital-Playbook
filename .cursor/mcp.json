@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "egis-design-system": {
+      "url": "https://design-system.egis-group.io/mcp",
+      "type": "http"
+    }
+  }
+}
