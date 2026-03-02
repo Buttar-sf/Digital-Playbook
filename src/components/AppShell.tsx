@@ -1,66 +1,129 @@
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import {
-  Home, FileText, Rocket, FolderOpen, BookOpen,
-  Map, MessageSquare, ShieldCheck, Settings, Search,
-  Bell, Layers, ClipboardList
+  Home, BookOpen, Briefcase, Rocket, MessageSquare,
+  FileText, Search, Bell, ChevronDown, ChevronRight,
 } from 'lucide-react';
+import { useState } from 'react';
 import './AppShell.css';
 import './UI.css';
 
-const navItems = [
+const navSections = [
   { to: '/', icon: Home, label: 'Accueil' },
-  { to: '/offres', icon: FileText, label: 'Offres (AO)' },
-  { to: '/projets', icon: Rocket, label: 'Démarrage de projet', children: [
-    { to: '/projets/ecd', icon: FolderOpen, label: 'ECD / CDE' },
-    { to: '/projets/bep', icon: BookOpen, label: 'BEP' },
-    { to: '/projets/tidp', icon: ClipboardList, label: 'Plans d\'information' },
-    { to: '/projets/sig', icon: Map, label: 'SIG' },
-  ]},
-  { to: '/qr', icon: MessageSquare, label: 'Q/R' },
-  { to: '/qualite', icon: ShieldCheck, label: 'Qualité' },
-  { to: '/parametres', icon: Settings, label: 'Paramètres' },
+  {
+    key: 'methodologies', icon: BookOpen, label: 'Méthodologies',
+    children: [
+      { to: '/methodologies/introduction', label: 'Introduction' },
+      { to: '/methodologies/contributeurs', label: 'Liste des contributeurs' },
+    ],
+  },
+  {
+    key: 'offres', icon: Briefcase, label: 'Intégration du digital dans les offres',
+    children: [
+      { to: '/offres/processus', label: 'Processus d\'intégration' },
+      { to: '/offres/bpmn', label: 'BPMN traitement des offres' },
+      { to: '/offres/taches', label: 'Description des tâches' },
+      { to: '/offres/responsabilites', label: 'Table des responsabilités' },
+      { to: '/offres/tableau', label: 'Tableau des offres' },
+    ],
+  },
+  {
+    key: 'demarrage', icon: Rocket, label: 'Démarrage de projet',
+    children: [
+      { to: '/demarrage/bpmn', label: 'BPMN démarrage' },
+      { to: '/demarrage/taches', label: 'Description des tâches' },
+      { to: '/demarrage/responsabilites', label: 'Table des responsabilités QC' },
+    ],
+  },
+  { to: '/qr', icon: MessageSquare, label: 'Questions / Réponses' },
+  { to: '/documentation', icon: FileText, label: 'Documentation' },
 ];
 
 export default function AppShell() {
   const location = useLocation();
-  const isProjetSection = location.pathname.startsWith('/projets');
+  const [expanded, setExpanded] = useState<Record<string, boolean>>({
+    methodologies: location.pathname.startsWith('/methodologies'),
+    offres: location.pathname.startsWith('/offres'),
+    demarrage: location.pathname.startsWith('/demarrage'),
+  });
+
+  function toggleSection(key: string) {
+    setExpanded(prev => ({ ...prev, [key]: !prev[key] }));
+  }
+
+  function isChildActive(children: { to: string }[]) {
+    return children.some(c => location.pathname === c.to);
+  }
 
   return (
     <div className="app-shell">
       <aside className="sidebar" role="navigation" aria-label="Navigation principale">
         <div className="sidebar-brand">
-          <div className="sidebar-brand-icon"><Layers size={16} /></div>
-          <h2>Egis Digital<br/>Standards Assistant</h2>
+          <div className="egis-logo">
+            <svg viewBox="0 0 32 32" width="32" height="32">
+              <circle cx="16" cy="16" r="15" fill="#8dc63f" />
+              <text x="16" y="22" textAnchor="middle" fill="white" fontSize="18" fontWeight="700" fontFamily="Arial">e</text>
+            </svg>
+          </div>
+          <div>
+            <h2 className="sidebar-title">Digital Standards</h2>
+            <span className="sidebar-subtitle">Assistant</span>
+          </div>
         </div>
+
         <nav className="sidebar-nav">
-          <div className="sidebar-section-label">Navigation</div>
-          {navItems.map((item) => (
-            <div key={item.to}>
-              <NavLink
-                to={item.to}
-                end={!item.children}
-                className={({ isActive }) =>
-                  `sidebar-link${isActive && !item.children ? ' active' : ''}${item.children && isProjetSection ? ' active' : ''}`
-                }
-              >
-                <item.icon className="icon" size={20} />
-                {item.label}
-              </NavLink>
-              {item.children && isProjetSection && (
-                item.children.map(sub => (
-                  <NavLink
-                    key={sub.to}
-                    to={sub.to}
-                    className={({ isActive }) => `sidebar-link sidebar-sub-link${isActive ? ' active' : ''}`}
-                  >
-                    <sub.icon className="icon" size={16} />
-                    {sub.label}
-                  </NavLink>
-                ))
-              )}
-            </div>
-          ))}
+          {navSections.map(item => {
+            if ('to' in item && item.to) {
+              const to = item.to;
+              return (
+                <NavLink
+                  key={to}
+                  to={to}
+                  end
+                  className={({ isActive }) => `sidebar-link${isActive ? ' active' : ''}`}
+                >
+                  <item.icon className="icon" size={18} />
+                  <span>{item.label}</span>
+                </NavLink>
+              );
+            }
+
+            const key = item.key!;
+            const children = item.children!;
+            const isOpen = expanded[key];
+            const hasActiveChild = isChildActive(children);
+
+            return (
+              <div key={key} className="sidebar-group">
+                <button
+                  className={`sidebar-link sidebar-group-toggle${hasActiveChild ? ' active' : ''}`}
+                  onClick={() => toggleSection(key)}
+                  aria-expanded={isOpen}
+                >
+                  <item.icon className="icon" size={18} />
+                  <span>{item.label}</span>
+                  {isOpen ? <ChevronDown size={14} className="chevron" /> : <ChevronRight size={14} className="chevron" />}
+                </button>
+                {isOpen && (
+                  <div className="sidebar-children">
+                    {children.map(child => (
+                      <NavLink
+                        key={child.to}
+                        to={child.to}
+                        className={({ isActive }) => `sidebar-link sidebar-sub-link${isActive ? ' active' : ''}`}
+                      >
+                        <span>{child.label}</span>
+                      </NavLink>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </nav>
+
+        <div className="sidebar-footer">
+          <span className="sidebar-footer-text">Business Line Transport & Territoire</span>
+        </div>
       </aside>
 
       <div className="main-content">
@@ -68,7 +131,7 @@ export default function AppShell() {
           <div className="topbar-left">
             <div className="topbar-search">
               <Search size={16} color="var(--color-gray-400)" />
-              <input type="text" placeholder="Rechercher projets, livrables, personnes…" aria-label="Recherche globale" />
+              <input type="text" placeholder="Rechercher…" aria-label="Recherche globale" />
             </div>
           </div>
           <div className="topbar-right">

@@ -578,3 +578,24 @@ tr:hover td {
 .score-3 { background: #fef3c7; color: #92400e; }
 .score-2 { background: #fee2e2; color: #991b1b; }
 .score-1 { background: #fecaca; color: #7f1d1d; }
+
+/* ── DOCUMENT TEXT STYLES ── */
+.doc-paragraph {
+  font-size: var(--text-sm);
+  color: var(--color-gray-700);
+  line-height: var(--leading-relaxed);
+  margin-bottom: var(--sp-4);
+}
+
+.doc-callout {
+  background: var(--color-gray-50);
+  border-left: 4px solid var(--egis-green-400);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  padding: var(--sp-4) var(--sp-5);
+}
+
+.doc-li {
+  font-size: var(--text-sm);
+  color: var(--color-gray-700);
+  line-height: var(--leading-relaxed);
+}

@@ -1,11 +1,24 @@
 /* ═══════════════════════════════════════════════════════════════
    DESIGN TOKENS — Egis Digital Standards Assistant
-   Neutral theme, ready to be skinned to Egis brand colors.
-   All spacing multiples of 4 px.  AA contrast minimum.
+   Brand colors extracted from Egis logo and BPMN documents.
+   Egis green, dark charcoal, light grays.
+   Spacing multiples of 4 px. AA contrast minimum.
    ═══════════════════════════════════════════════════════════════ */
 
 :root {
-  /* ── Palette: Neutrals ── */
+  /* ── Egis Brand Palette ── */
+  --egis-green-50: #f1f9e8;
+  --egis-green-100: #dff0cc;
+  --egis-green-200: #c5e4a0;
+  --egis-green-300: #a8d66e;
+  --egis-green-400: #8dc63f;
+  --egis-green-500: #72a832;
+  --egis-green-600: #5a8a28;
+  --egis-green-700: #456c1f;
+  --egis-green-800: #314e17;
+  --egis-green-900: #1e3310;
+
+  /* ── Neutrals ── */
   --color-white: #ffffff;
   --color-gray-50: #f8f9fa;
   --color-gray-100: #f1f3f5;
@@ -18,19 +31,27 @@
   --color-gray-800: #343a40;
   --color-gray-900: #212529;
 
-  /* ── Palette: Brand (neutral base — swap for Egis) ── */
-  --color-primary-50: #e8f4fd;
-  --color-primary-100: #bee3f8;
-  --color-primary-200: #90cdf4;
-  --color-primary-300: #63b3ed;
-  --color-primary-400: #4299e1;
-  --color-primary-500: #2b6cb0;
-  --color-primary-600: #2256a0;
-  --color-primary-700: #1a4480;
-  --color-primary-800: #153e75;
-  --color-primary-900: #1a365d;
+  /* ── Primary = Egis Green ── */
+  --color-primary-50: var(--egis-green-50);
+  --color-primary-100: var(--egis-green-100);
+  --color-primary-200: var(--egis-green-200);
+  --color-primary-300: var(--egis-green-300);
+  --color-primary-400: var(--egis-green-400);
+  --color-primary-500: var(--egis-green-500);
+  --color-primary-600: var(--egis-green-600);
+  --color-primary-700: var(--egis-green-700);
+  --color-primary-800: var(--egis-green-800);
+  --color-primary-900: var(--egis-green-900);
 
-  /* ── Semantic: Status badges (ISO 19650) ── */
+  /* ── BPMN Role Colors (from Egis BPMN diagram) ── */
+  --role-responsable-ao: #f5d033;
+  --role-referent-ao: #ff6699;
+  --role-bim-manager: #00cc66;
+  --role-sig-manager: #00cc66;
+  --role-chef-projet: #3399ff;
+  --role-chef-discipline: #b380ff;
+
+  /* ── Semantic: Status ── */
   --color-wip: #6c757d;
   --color-wip-bg: #f1f3f5;
   --color-shared: #2b6cb0;
@@ -54,18 +75,18 @@
   --font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
   --font-mono: "JetBrains Mono", "Fira Code", "Consolas", monospace;
 
-  --text-xs: 0.75rem;    /* 12px */
-  --text-sm: 0.8125rem;  /* 13px */
-  --text-base: 0.875rem; /* 14px */
-  --text-md: 1rem;       /* 16px */
-  --text-lg: 1.125rem;   /* 18px */
-  --text-xl: 1.25rem;    /* 20px */
-  --text-2xl: 1.5rem;    /* 24px */
-  --text-3xl: 1.875rem;  /* 30px */
+  --text-xs: 0.75rem;
+  --text-sm: 0.8125rem;
+  --text-base: 0.875rem;
+  --text-md: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
 
   --leading-tight: 1.25;
   --leading-normal: 1.5;
-  --leading-relaxed: 1.625;
+  --leading-relaxed: 1.75;
 
   --weight-regular: 400;
   --weight-medium: 500;
@@ -85,11 +106,8 @@
   --sp-16: 64px;
 
   /* ── Layout ── */
-  --sidebar-width: 260px;
-  --sidebar-collapsed: 64px;
+  --sidebar-width: 272px;
   --topbar-height: 56px;
-  --grid-max: 1440px;
-  --grid-gutter: 24px;
 
   /* ── Borders & Radius ── */
   --radius-sm: 4px;
@@ -108,6 +126,6 @@
   --transition-fast: 150ms ease;
   --transition-normal: 250ms ease;
 
-  /* ── Focus ── */
-  --focus-ring: 0 0 0 3px rgba(43, 108, 176, 0.4);
+  /* ── Focus (Egis green) ── */
+  --focus-ring: 0 0 0 3px rgba(141, 198, 63, 0.4);
 }

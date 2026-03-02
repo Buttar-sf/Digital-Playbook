@@ -1,204 +1,117 @@
 import { Link } from 'react-router-dom';
-import {
-  FileText, Rocket, FolderOpen, BookOpen, Map, ClipboardList,
-  MessageSquare, ShieldCheck, TrendingUp, AlertCircle, CheckCircle2, Clock
-} from 'lucide-react';
-import { projets, offres, questionsReponses, tidpLivrables, controles } from '../data/mockData';
-import { OffreStatutBadge, PhaseStatutBadge } from '../components/Badge';
+import { BookOpen, Briefcase, Rocket, Info } from 'lucide-react';
+import { GlossaryTerm } from '../components/Tooltip';
 
 export default function Accueil() {
-  const offresEnCours = offres.filter(o => o.statut === 'En cours').length;
-  const projetsActifs = projets.filter(p => p.phase !== 'Clôturé').length;
-  const qrOuvertes = questionsReponses.filter(q => q.statut === 'Ouverte' || q.statut === 'En attente').length;
-  const tidpTotal = tidpLivrables.length;
-  const tidpPublished = tidpLivrables.filter(t => t.statut === 'Published').length;
-  const clashsOuverts = controles.filter(c => c.type === 'Clash detection' && c.statut === 'En cours').length;
-
   return (
     <div>
       <div className="page-header">
         <div>
           <h1>Accueil</h1>
-          <p className="page-header-sub">Bienvenue sur l'assistant de standards numériques Egis</p>
+          <p className="page-header-sub">Egis Digital Standards Assistant — Business Line Transport & Territoire</p>
         </div>
       </div>
 
-      {/* Quick Access Buttons */}
+      {/* Quick Access */}
       <div className="section">
         <div className="quick-actions">
-          <Link to="/offres" className="quick-action-btn">
-            <FileText className="icon" size={20} />
-            Nouvelle offre AO
+          <Link to="/methodologies/introduction" className="quick-action-btn">
+            <BookOpen className="icon" size={22} />
+            <div>
+              <strong>Méthodologie</strong>
+              <span style={{ display: 'block', fontSize: 'var(--text-xs)', color: 'var(--color-gray-500)', fontWeight: 400 }}>
+                Guide et principes
+              </span>
+            </div>
           </Link>
-          <Link to="/projets" className="quick-action-btn">
-            <Rocket className="icon" size={20} />
-            Voir les projets
+          <Link to="/offres/tableau" className="quick-action-btn">
+            <Briefcase className="icon" size={22} />
+            <div>
+              <strong>Nouvelle offre</strong>
+              <span style={{ display: 'block', fontSize: 'var(--text-xs)', color: 'var(--color-gray-500)', fontWeight: 400 }}>
+                Créer un dossier AO
+              </span>
+            </div>
           </Link>
-          <Link to="/projets/ecd" className="quick-action-btn">
-            <FolderOpen className="icon" size={20} />
-            Choisir un ECD
-          </Link>
-          <Link to="/projets/bep" className="quick-action-btn">
-            <BookOpen className="icon" size={20} />
-            Rédiger un BEP
-          </Link>
-          <Link to="/projets/tidp" className="quick-action-btn">
-            <ClipboardList className="icon" size={20} />
-            Plans d'information
-          </Link>
-          <Link to="/projets/sig" className="quick-action-btn">
-            <Map className="icon" size={20} />
-            Intégration SIG
-          </Link>
-          <Link to="/qr" className="quick-action-btn">
-            <MessageSquare className="icon" size={20} />
-            Registre Q/R
-          </Link>
-          <Link to="/qualite" className="quick-action-btn">
-            <ShieldCheck className="icon" size={20} />
-            Contrôles qualité
+          <Link to="/demarrage/bpmn" className="quick-action-btn">
+            <Rocket className="icon" size={22} />
+            <div>
+              <strong>Nouveau projet</strong>
+              <span style={{ display: 'block', fontSize: 'var(--text-xs)', color: 'var(--color-gray-500)', fontWeight: 400 }}>
+                Démarrer un projet
+              </span>
+            </div>
           </Link>
         </div>
       </div>
 
-      {/* Methodology Note */}
+      {/* ISO 19650 importance */}
       <div className="section">
-        <div className="alert alert-info">
-          <AlertCircle size={20} style={{ flexShrink: 0, marginTop: 2 }} />
-          <div>
-            <strong>Pourquoi respecter la méthodologie ISO 19650 ?</strong>
-            <p style={{ marginTop: 4 }}>
-              La norme ISO 19650 structure la gestion de l'information tout au long du cycle de vie des actifs
-              bâtis. En suivant ses principes — BEP (pré et post contrat), TIDP/MIDP, ECD avec statuts
-              normalisés (WIP → Shared → Published → Archive) — les équipes Egis garantissent la traçabilité,
-              la qualité et l'interopérabilité des livrables BIM et SIG. Cet outil vous accompagne étape par
-              étape, de la réponse à l'appel d'offres jusqu'à la livraison finale.
-            </p>
+        <div className="card">
+          <div className="card-body" style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+            <div style={{
+              width: 44, height: 44, borderRadius: 'var(--radius-md)',
+              background: 'var(--egis-green-50)', color: 'var(--egis-green-600)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+            }}>
+              <Info size={22} />
+            </div>
+            <div>
+              <h3 style={{ marginBottom: 8, color: 'var(--egis-green-700)' }}>L'importance du respect des normes ISO 19650</h3>
+              <p style={{ fontSize: 'var(--text-sm)', color: 'var(--color-gray-600)', lineHeight: 'var(--leading-relaxed)' }}>
+                La norme <GlossaryTerm term="BIM" /> ISO 19650 structure la gestion de l'information tout au long du cycle de vie des actifs bâtis.
+                En suivant ses principes — <GlossaryTerm term="BEP" /> (pré et post contrat), <GlossaryTerm term="TIDP" />/<GlossaryTerm term="MIDP" />,
+                {' '}<GlossaryTerm term="ECD" /> avec statuts normalisés — les équipes Egis garantissent la traçabilité, la qualité et
+                l'interopérabilité des livrables <GlossaryTerm term="BIM" /> et <GlossaryTerm term="SIG" />.
+              </p>
+              <p style={{ fontSize: 'var(--text-sm)', color: 'var(--color-gray-600)', lineHeight: 'var(--leading-relaxed)', marginTop: 8 }}>
+                La standardisation des solutions numériques constitue une nécessité stratégique pour répondre efficacement
+                aux exigences de nos clients. Ce guide accompagne la mise en œuvre du processus <GlossaryTerm term="BIM" /> à l'échelle
+                de la Business Line Transport et Territoire, de la réponse à l'<GlossaryTerm term="AO" /> jusqu'à la livraison finale.
+              </p>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* KPIs */}
+      {/* Sections overview */}
       <div className="section">
-        <h3 className="section-title">Indicateurs clés</h3>
-        <div className="grid-4">
-          <div className="kpi-card">
-            <span className="kpi-label">Offres en cours</span>
-            <span className="kpi-value">{offresEnCours}</span>
-            <span className="kpi-sub">{offres.length} offres au total</span>
-          </div>
-          <div className="kpi-card">
-            <span className="kpi-label">Projets actifs</span>
-            <span className="kpi-value">{projetsActifs}</span>
-            <span className="kpi-sub">{projets.length} projets suivis</span>
-          </div>
-          <div className="kpi-card">
-            <span className="kpi-label">TIDP complétés</span>
-            <span className="kpi-value">{Math.round((tidpPublished / tidpTotal) * 100)}%</span>
-            <div className="progress-bar" style={{ marginTop: 4 }}>
-              <div className="progress-fill" style={{ width: `${(tidpPublished / tidpTotal) * 100}%` }} />
-            </div>
-          </div>
-          <div className="kpi-card">
-            <span className="kpi-label">Q/R ouvertes</span>
-            <span className="kpi-value">{qrOuvertes}</span>
-            <span className="kpi-sub">{clashsOuverts} clash(s) en cours</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Tasks by Role + Recent Activity */}
-      <div className="grid-2">
-        <div className="section">
-          <h3 className="section-title">À faire — BIM Manager</h3>
-          <div className="card">
-            <div className="card-body" style={{ padding: 0 }}>
-              {[
-                { icon: FileText, text: 'Analyser CDC AO — LGV Bordeaux–Toulouse', priority: 'high' },
-                { icon: BookOpen, text: 'Valider pré-BEP — ONCF LGV Kénitra', priority: 'medium' },
-                { icon: FolderOpen, text: 'Choisir ECD — Réseau cyclable Lyon', priority: 'medium' },
-                { icon: ShieldCheck, text: 'Contrôle LOD maquettes — Pont de Nouméa', priority: 'low' },
-                { icon: ClipboardList, text: 'Compléter TIDP Structure — Tramway Rabat', priority: 'high' },
-              ].map((task, i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 20px', borderBottom: i < 4 ? '1px solid var(--color-gray-100)' : 'none' }}>
-                  <div style={{
-                    width: 8, height: 8, borderRadius: '50%', flexShrink: 0,
-                    background: task.priority === 'high' ? 'var(--color-error)' : task.priority === 'medium' ? 'var(--color-warning)' : 'var(--color-gray-400)'
-                  }} />
-                  <task.icon size={16} style={{ color: 'var(--color-gray-400)', flexShrink: 0 }} />
-                  <span style={{ fontSize: 'var(--text-sm)', color: 'var(--color-gray-700)' }}>{task.text}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <div className="section">
-          <h3 className="section-title">Jalons & Conformité ISO 19650</h3>
-          <div className="card">
-            <div className="card-body" style={{ padding: 0 }}>
-              {[
-                { icon: CheckCircle2, text: 'Pré-BEP soumis — Al Ain Highway', date: '20 mars', done: true },
-                { icon: Clock, text: 'Deadline AO — LGV Bordeaux–Toulouse', date: '15 avril', done: false },
-                { icon: Clock, text: 'TIDP Structure due — Pont de Nouméa', date: '15 mai', done: false },
-                { icon: Clock, text: 'Revue MIDP consolidé — Tramway Rabat', date: '20 mai', done: false },
-                { icon: CheckCircle2, text: 'ECD configuré — A69 Castres–Toulouse', date: '10 mars', done: true },
-              ].map((item, i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 20px', borderBottom: i < 4 ? '1px solid var(--color-gray-100)' : 'none' }}>
-                  <item.icon size={16} style={{ color: item.done ? 'var(--color-success)' : 'var(--color-gray-400)', flexShrink: 0 }} />
-                  <span style={{ flex: 1, fontSize: 'var(--text-sm)', color: item.done ? 'var(--color-gray-400)' : 'var(--color-gray-700)', textDecoration: item.done ? 'line-through' : 'none' }}>{item.text}</span>
-                  <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-gray-400)', whiteSpace: 'nowrap' }}>{item.date}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Recent Offres + Projects */}
-      <div className="grid-2">
-        <div className="section">
-          <h3 className="section-title">Offres récentes</h3>
-          <div className="card">
-            <div className="card-body" style={{ padding: 0 }}>
-              {offres.slice(0, 4).map((o, i) => (
-                <div key={o.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 20px', borderBottom: i < 3 ? '1px solid var(--color-gray-100)' : 'none' }}>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 'var(--text-sm)', fontWeight: 500, color: 'var(--color-gray-800)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{o.titre}</div>
-                    <div style={{ fontSize: 'var(--text-xs)', color: 'var(--color-gray-500)' }}>{o.client} · {o.pays}</div>
-                  </div>
-                  <OffreStatutBadge statut={o.statut} />
-                </div>
-              ))}
-            </div>
-            <div className="card-footer">
-              <Link to="/offres" style={{ fontSize: 'var(--text-sm)' }}>Voir toutes les offres →</Link>
-            </div>
-          </div>
-        </div>
-
-        <div className="section">
-          <h3 className="section-title">Projets en cours</h3>
-          <div className="card">
-            <div className="card-body" style={{ padding: 0 }}>
-              {projets.map((p, i) => (
-                <div key={p.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 20px', borderBottom: i < projets.length - 1 ? '1px solid var(--color-gray-100)' : 'none' }}>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 'var(--text-sm)', fontWeight: 500, color: 'var(--color-gray-800)' }}>{p.nom}</div>
-                    <div style={{ fontSize: 'var(--text-xs)', color: 'var(--color-gray-500)' }}>{p.client} · {p.ecdChoisi}</div>
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <TrendingUp size={14} style={{ color: 'var(--color-gray-400)' }} />
-                    <span style={{ fontSize: 'var(--text-xs)', color: 'var(--color-gray-500)' }}>{p.progression}%</span>
-                    <PhaseStatutBadge phase={p.phase} />
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="card-footer">
-              <Link to="/projets" style={{ fontSize: 'var(--text-sm)' }}>Voir tous les projets →</Link>
-            </div>
-          </div>
+        <h3 className="section-title">Explorez le guide</h3>
+        <div className="grid-2">
+          {[
+            {
+              to: '/methodologies/introduction',
+              title: 'Introduction & méthodologie',
+              desc: 'Cadre structuré pour la standardisation des solutions numériques BIM-SIG. Quatre axes majeurs : exigences, organisation, environnement, production.',
+              color: 'var(--egis-green-400)',
+            },
+            {
+              to: '/offres/processus',
+              title: 'Intégration du digital dans les offres',
+              desc: 'Nouveau processus de structuration des offres, BPMN des tâches, rôles et responsabilités pour une réponse optimale aux AO.',
+              color: 'var(--role-referent-ao)',
+            },
+            {
+              to: '/demarrage/bpmn',
+              title: 'Démarrage de projet',
+              desc: 'Processus de démarrage, organisation des équipes, contrôle qualité. Du kick-off à la mise en production.',
+              color: 'var(--color-info)',
+            },
+            {
+              to: '/documentation',
+              title: 'Documentation & glossaire',
+              desc: 'Référentiels normatifs, acronymes, définitions. Tout le vocabulaire BIM-SIG standardisé pour les projets Egis.',
+              color: 'var(--color-gray-500)',
+            },
+          ].map(item => (
+            <Link key={item.to} to={item.to} className="card" style={{ textDecoration: 'none', transition: 'all var(--transition-fast)' }}>
+              <div className="card-body">
+                <div style={{ width: '100%', height: 4, background: item.color, borderRadius: 2, marginBottom: 16 }} />
+                <h4 style={{ marginBottom: 8, color: 'var(--color-gray-800)' }}>{item.title}</h4>
+                <p style={{ fontSize: 'var(--text-sm)', color: 'var(--color-gray-600)', margin: 0, lineHeight: 'var(--leading-relaxed)' }}>{item.desc}</p>
+              </div>
+            </Link>
+          ))}
         </div>
       </div>
     </div>

@@ -1,30 +1,35 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import AppShell from './components/AppShell';
 import Accueil from './pages/Accueil';
+import Introduction from './pages/Introduction';
+import Contributeurs from './pages/Contributeurs';
+import Processus from './pages/Processus';
+import BPMNViewer from './pages/BPMNViewer';
+import Taches from './pages/Taches';
+import Responsabilites from './pages/Responsabilites';
 import Offres from './pages/Offres';
-import Projets from './pages/Projets';
-import ECD from './pages/ECD';
-import BEP from './pages/BEP';
-import TIDP from './pages/TIDP';
-import SIG from './pages/SIG';
+import Demarrage from './pages/Demarrage';
 import QR from './pages/QR';
-import Qualite from './pages/Qualite';
-import Parametres from './pages/Parametres';
+import Documentation from './pages/Documentation';
 
 export default function App() {
   return (
     <Routes>
       <Route element={<AppShell />}>
         <Route path="/" element={<Accueil />} />
-        <Route path="/offres" element={<Offres />} />
-        <Route path="/projets" element={<Projets />} />
-        <Route path="/projets/ecd" element={<ECD />} />
-        <Route path="/projets/bep" element={<BEP />} />
-        <Route path="/projets/tidp" element={<TIDP />} />
-        <Route path="/projets/sig" element={<SIG />} />
+        <Route path="/methodologies/introduction" element={<Introduction />} />
+        <Route path="/methodologies/contributeurs" element={<Contributeurs />} />
+        <Route path="/offres/processus" element={<Processus />} />
+        <Route path="/offres/bpmn" element={<BPMNViewer />} />
+        <Route path="/offres/taches" element={<Taches />} />
+        <Route path="/offres/responsabilites" element={<Responsabilites />} />
+        <Route path="/offres/tableau" element={<Offres />} />
+        <Route path="/demarrage/bpmn" element={<Demarrage />} />
+        <Route path="/demarrage/taches" element={<Demarrage />} />
+        <Route path="/demarrage/responsabilites" element={<Demarrage />} />
         <Route path="/qr" element={<QR />} />
-        <Route path="/qualite" element={<Qualite />} />
-        <Route path="/parametres" element={<Parametres />} />
+        <Route path="/documentation" element={<Documentation />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>
   );

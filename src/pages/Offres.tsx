@@ -2,10 +2,11 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, Filter, Download, Search, ArrowRightCircle, Check, X } from 'lucide-react';
 import { offres as initialOffres, type Offre, type OffreStatut } from '../data/mockData';
+// Badge not used directly but available for future
 
 const statutOptions: OffreStatut[] = ['Brouillon', 'En cours', 'Soumise', 'Gagnée', 'Perdue'];
 
-const statutSelectColors: Record<OffreStatut, { bg: string; color: string }> = {
+const statutColors: Record<OffreStatut, { bg: string; color: string }> = {
   Brouillon:  { bg: 'var(--color-gray-100)', color: 'var(--color-gray-700)' },
   'En cours': { bg: 'var(--color-info-bg)', color: 'var(--color-info)' },
   Soumise:    { bg: 'var(--color-shared-bg)', color: 'var(--color-shared)' },
@@ -16,17 +17,16 @@ const statutSelectColors: Record<OffreStatut, { bg: string; color: string }> = {
 export default function Offres() {
   const navigate = useNavigate();
   const [data, setData] = useState<Offre[]>([...initialOffres]);
-  const [filterStatut, setFilterStatut] = useState<string>('Tous');
-  const [filterBim, setFilterBim] = useState<string>('Tous');
+  const [filterStatut, setFilterStatut] = useState('Tous');
   const [searchTerm, setSearchTerm] = useState('');
   const [showWizard, setShowWizard] = useState(false);
   const [wizardStep, setWizardStep] = useState(0);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editForm, setEditForm] = useState<Partial<Offre>>({});
   const [convertingId, setConvertingId] = useState<string | null>(null);
 
   const filtered = data.filter(o => {
     if (filterStatut !== 'Tous' && o.statut !== filterStatut) return false;
-    if (filterBim === 'BIM' && !o.bimRequis) return false;
-    if (filterBim === 'SIG' && !o.sigRequis) return false;
     if (searchTerm && !o.titre.toLowerCase().includes(searchTerm.toLowerCase()) && !o.client.toLowerCase().includes(searchTerm.toLowerCase())) return false;
     return true;
   });
@@ -35,29 +35,26 @@ export default function Offres() {
     setData(prev => prev.map(o => o.id === id ? { ...o, statut: newStatut } : o));
   }
 
-  function handleConvertToProject(offre: Offre) {
+  function handleConvert(offre: Offre) {
     setConvertingId(offre.id);
-    setTimeout(() => {
-      setConvertingId(null);
-      navigate('/projets');
-    }, 1000);
+    setTimeout(() => { setConvertingId(null); navigate('/demarrage/bpmn'); }, 800);
   }
 
-  const wizardSteps = [
-    'Import CDC & Charte BIM',
-    'Constitution équipe',
-    'Choix ECD',
-    'Pré-BEP',
-    'Livrables additionnels',
-    'Revue & Soumission',
-  ];
+  function startEdit(o: Offre) { setEditingId(o.id); setEditForm({ ...o }); }
+  function saveEdit() {
+    if (!editingId) return;
+    setData(prev => prev.map(o => o.id === editingId ? { ...o, ...editForm } as Offre : o));
+    setEditingId(null);
+  }
+
+  const steps = ['Informations générales', 'Exigences BIM/SIG', 'Équipe dédiée', 'Synthèse'];
 
   return (
     <div>
       <div className="page-header">
         <div>
-          <h1>Offres (AO)</h1>
-          <p className="page-header-sub">Gérez vos réponses aux appels d'offres BIM/SIG</p>
+          <h1>Tableau des offres en cours</h1>
+          <p className="page-header-sub">Intégration du digital dans les offres</p>
         </div>
         <div className="page-actions">
           <button className="btn btn-secondary"><Download size={16} /> Exporter</button>
@@ -65,137 +62,90 @@ export default function Offres() {
         </div>
       </div>
 
-      {/* Wizard Modal */}
+      {/* Wizard */}
       {showWizard && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
-          <div className="card" style={{ width: '100%', maxWidth: 800, maxHeight: '90vh', overflow: 'auto' }}>
+          <div className="card" style={{ width: '100%', maxWidth: 700, maxHeight: '90vh', overflow: 'auto' }}>
             <div className="card-header">
-              <h3>Réponse à un appel d'offres</h3>
+              <h3>Créer une offre</h3>
               <button className="btn btn-ghost btn-icon" onClick={() => setShowWizard(false)}><X size={18} /></button>
             </div>
             <div className="card-body">
-              {/* Stepper */}
               <div className="stepper">
-                {wizardSteps.map((step, i) => (
+                {steps.map((s, i) => (
                   <div key={i} style={{ display: 'contents' }}>
                     <div className={`stepper-step ${i === wizardStep ? 'active' : i < wizardStep ? 'done' : ''}`}>
                       <div className="stepper-circle">{i < wizardStep ? <Check size={14} /> : i + 1}</div>
-                      <span className="stepper-label">{step}</span>
+                      <span className="stepper-label">{s}</span>
                     </div>
-                    {i < wizardSteps.length - 1 && <div className={`stepper-line ${i < wizardStep ? 'done' : ''}`} />}
+                    {i < steps.length - 1 && <div className={`stepper-line ${i < wizardStep ? 'done' : ''}`} />}
                   </div>
                 ))}
               </div>
-
-              {/* Step Content */}
               {wizardStep === 0 && (
                 <div>
-                  <h4 style={{ marginBottom: 16 }}>Importer le cahier des charges et la charte BIM</h4>
-                  <div className="dropzone">
-                    <Download size={32} style={{ marginBottom: 8, opacity: 0.5 }} />
-                    <p><strong>Glissez-déposez</strong> vos fichiers ici</p>
-                    <p style={{ fontSize: 'var(--text-xs)', marginTop: 4 }}>PDF, DOCX, XLS — Max 50 Mo</p>
-                  </div>
-                  <div className="form-group" style={{ marginTop: 16 }}>
-                    <label className="form-label">Client</label>
-                    <input className="form-input" placeholder="Nom du client" />
+                  <div className="form-group"><label className="form-label">Titre de l'offre</label><input className="form-input" placeholder="Ex: LGV Bordeaux–Toulouse" /></div>
+                  <div className="grid-2">
+                    <div className="form-group"><label className="form-label">Client</label><input className="form-input" placeholder="Nom du client" /></div>
+                    <div className="form-group"><label className="form-label">Pays</label><input className="form-input" placeholder="France" /></div>
                   </div>
                   <div className="grid-2">
-                    <div className="form-group">
-                      <label className="form-label">Pays</label>
-                      <input className="form-input" placeholder="France" />
-                    </div>
-                    <div className="form-group">
-                      <label className="form-label">Date limite</label>
-                      <input className="form-input" type="date" />
-                    </div>
+                    <div className="form-group"><label className="form-label">Deadline</label><input className="form-input" type="date" /></div>
+                    <div className="form-group"><label className="form-label">Référent AO</label><select className="form-select"><option>— Sélectionner —</option><option>Marie Dupont</option><option>Thomas Bernard</option><option>Sophie Martin</option></select></div>
                   </div>
                 </div>
               )}
-
               {wizardStep === 1 && (
                 <div>
-                  <h4 style={{ marginBottom: 16 }}>Constitution de l'équipe projet</h4>
-                  <div className="alert alert-info" style={{ marginBottom: 16 }}>
-                    <span>Les rôles <strong>BIM Manager</strong> et <strong>SIG Manager</strong> sont obligatoires.</span>
+                  <div className="grid-2">
+                    <div className="form-group"><label className="form-label">BIM requis ?</label><select className="form-select"><option>Oui</option><option>Non</option></select></div>
+                    <div className="form-group"><label className="form-label">SIG requis ?</label><select className="form-select"><option>Oui</option><option>Non</option></select></div>
                   </div>
-                  {['BIM Manager *', 'SIG Manager *', 'Chef de projet', 'BIM Coordinateur', 'Gestionnaire documentaire'].map(role => (
-                    <div className="form-group" key={role}>
-                      <label className="form-label">{role}</label>
-                      <select className="form-select"><option>— Sélectionner —</option><option>Marie Dupont</option><option>Julie Morel</option><option>Thomas Bernard</option></select>
-                    </div>
-                  ))}
+                  <div className="form-group"><label className="form-label">Résumé des exigences</label><textarea className="form-textarea" placeholder="Décrire les exigences BIM/SIG du CDC…" /></div>
                 </div>
               )}
-
               {wizardStep === 2 && (
                 <div>
-                  <h4 style={{ marginBottom: 16 }}>Choix de l'Environnement Commun de Données</h4>
-                  <p style={{ color: 'var(--color-gray-600)', fontSize: 'var(--text-sm)', marginBottom: 16 }}>Sélectionnez l'ECD selon les exigences du projet.</p>
-                  <div className="grid-3">
-                    {['Autodesk ACC', 'Bentley ProjectWise', 'SharePoint / Teams'].map((ecd, i) => (
-                      <div key={ecd} className="card" style={{ cursor: 'pointer', border: i === 0 ? '2px solid var(--color-primary-500)' : undefined }}>
-                        <div className="card-body" style={{ textAlign: 'center', padding: 24 }}>
-                          <FolderOpen size={32} style={{ color: 'var(--color-primary-500)', marginBottom: 8 }} />
-                          <h4>{ecd}</h4>
-                          <p style={{ fontSize: 'var(--text-xs)', color: 'var(--color-gray-500)', marginTop: 4 }}>
-                            {i === 0 ? 'Maquettes BIM + GED intégrée' : i === 1 ? 'GED enterprise + workflows' : 'GED Microsoft 365'}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {wizardStep === 3 && (
-                <div>
-                  <h4 style={{ marginBottom: 16 }}>Structure du Pré-BEP</h4>
-                  <p style={{ color: 'var(--color-gray-600)', fontSize: 'var(--text-sm)', marginBottom: 16 }}>Le pré-BEP sera généré automatiquement à partir des informations saisies.</p>
-                  {['Organisation & RACI', 'Stratégie d\'échange', 'Usages & objectifs BIM/SIG', 'Normes & conventions de nommage', 'Outils & versions', 'Jalons & livrables'].map(section => (
-                    <div key={section} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 0', borderBottom: '1px solid var(--color-gray-100)' }}>
-                      <Check size={16} style={{ color: 'var(--color-success)' }} />
-                      <span style={{ fontSize: 'var(--text-sm)' }}>{section}</span>
-                    </div>
+                  {['BIM Manager', 'SIG Manager', 'Chef de projet'].map(r => (
+                    <div className="form-group" key={r}><label className="form-label">{r}</label><select className="form-select"><option>— Sélectionner —</option><option>Marie Dupont</option><option>Julie Morel</option><option>Thomas Bernard</option></select></div>
                   ))}
                 </div>
               )}
-
-              {wizardStep === 4 && (
-                <div>
-                  <h4 style={{ marginBottom: 16 }}>Livrables additionnels</h4>
-                  <div className="form-group">
-                    <label className="form-label">Livrables complémentaires</label>
-                    <textarea className="form-textarea" placeholder="Liste des livrables additionnels demandés par le client…" />
-                  </div>
-                  <div className="form-group">
-                    <label className="form-label">Notes internes</label>
-                    <textarea className="form-textarea" placeholder="Commentaires pour l'équipe…" />
-                  </div>
-                </div>
-              )}
-
-              {wizardStep === 5 && (
-                <div>
-                  <h4 style={{ marginBottom: 16 }}>Revue finale & Soumission</h4>
-                  <div className="alert alert-success" style={{ marginBottom: 16 }}>
-                    <Check size={20} style={{ flexShrink: 0 }} />
-                    <span>Tous les éléments requis sont renseignés. Le dossier de soumission est prêt à être généré.</span>
-                  </div>
-                  <div style={{ display: 'flex', gap: 12 }}>
-                    <button className="btn btn-secondary">Sauvegarder brouillon</button>
-                    <button className="btn btn-primary">Générer dossier de soumission</button>
-                  </div>
-                </div>
+              {wizardStep === 3 && (
+                <div className="alert alert-success"><Check size={18} style={{ flexShrink: 0 }} /> L'offre est prête à être créée.</div>
               )}
             </div>
             <div className="card-footer" style={{ display: 'flex', justifyContent: 'space-between' }}>
               <button className="btn btn-secondary" onClick={() => setWizardStep(Math.max(0, wizardStep - 1))} disabled={wizardStep === 0}>Précédent</button>
-              {wizardStep < wizardSteps.length - 1 ? (
+              {wizardStep < steps.length - 1 ? (
                 <button className="btn btn-primary" onClick={() => setWizardStep(wizardStep + 1)}>Suivant</button>
               ) : (
-                <button className="btn btn-success" onClick={() => setShowWizard(false)}>Terminer</button>
+                <button className="btn btn-primary" onClick={() => setShowWizard(false)} style={{ background: 'var(--egis-green-500)' }}>Créer l'offre</button>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Modal */}
+      {editingId && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
+          <div className="card" style={{ width: '100%', maxWidth: 550 }}>
+            <div className="card-header"><h3>Éditer l'offre</h3><button className="btn btn-ghost btn-sm" onClick={() => setEditingId(null)}>Fermer</button></div>
+            <div className="card-body">
+              <div className="form-group"><label className="form-label">Titre</label><input className="form-input" value={editForm.titre || ''} onChange={e => setEditForm({ ...editForm, titre: e.target.value })} /></div>
+              <div className="grid-2">
+                <div className="form-group"><label className="form-label">Client</label><input className="form-input" value={editForm.client || ''} onChange={e => setEditForm({ ...editForm, client: e.target.value })} /></div>
+                <div className="form-group"><label className="form-label">Statut</label>
+                  <select className="form-select" value={editForm.statut || ''} onChange={e => setEditForm({ ...editForm, statut: e.target.value as OffreStatut })}>
+                    {statutOptions.map(s => <option key={s}>{s}</option>)}
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div className="card-footer" style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
+              <button className="btn btn-secondary" onClick={() => setEditingId(null)}>Annuler</button>
+              <button className="btn btn-primary" onClick={saveEdit}>Enregistrer</button>
             </div>
           </div>
         </div>
@@ -208,15 +158,7 @@ export default function Offres() {
             <div className="table-filter">
               <Filter size={14} />
               <select value={filterStatut} onChange={e => setFilterStatut(e.target.value)}>
-                <option>Tous</option>
-                {statutOptions.map(s => <option key={s}>{s}</option>)}
-              </select>
-            </div>
-            <div className="table-filter">
-              <select value={filterBim} onChange={e => setFilterBim(e.target.value)}>
-                <option value="Tous">BIM / SIG</option>
-                <option value="BIM">BIM requis</option>
-                <option value="SIG">SIG requis</option>
+                <option>Tous</option>{statutOptions.map(s => <option key={s}>{s}</option>)}
               </select>
             </div>
             <div className="table-filter">
@@ -229,55 +171,33 @@ export default function Offres() {
         <div style={{ overflowX: 'auto' }}>
           <table>
             <thead>
-              <tr>
-                <th>Réf.</th>
-                <th>Titre / Client</th>
-                <th>Pays</th>
-                <th>Deadline</th>
-                <th>Référent AO</th>
-                <th>BIM</th>
-                <th>SIG</th>
-                <th>Statut</th>
-                <th>Actions</th>
-              </tr>
+              <tr><th>Réf.</th><th>Titre / Client</th><th>Pays</th><th>Deadline</th><th>Référent AO</th><th>BIM</th><th>SIG</th><th>Statut</th><th>Dern. activité</th><th>Actions</th></tr>
             </thead>
             <tbody>
               {filtered.map(o => (
                 <tr key={o.id}>
                   <td className="td-bold" style={{ fontFamily: 'var(--font-mono)', fontSize: 'var(--text-xs)' }}>{o.id}</td>
-                  <td>
-                    <div className="td-bold">{o.titre}</div>
-                    <div style={{ fontSize: 'var(--text-xs)', color: 'var(--color-gray-500)' }}>{o.client}</div>
-                  </td>
+                  <td><div className="td-bold">{o.titre}</div><div style={{ fontSize: 'var(--text-xs)', color: 'var(--color-gray-500)' }}>{o.client}</div></td>
                   <td>{o.pays}</td>
                   <td style={{ whiteSpace: 'nowrap' }}>{o.deadline}</td>
                   <td>{o.referentAO}</td>
                   <td>{o.bimRequis ? '✓' : '—'}</td>
                   <td>{o.sigRequis ? '✓' : '—'}</td>
                   <td>
-                    <select
-                      className="status-select"
-                      value={o.statut}
-                      onChange={e => handleStatutChange(o.id, e.target.value as OffreStatut)}
-                      style={{
-                        background: statutSelectColors[o.statut].bg,
-                        color: statutSelectColors[o.statut].color,
-                      }}
-                    >
-                      {statutOptions.map(s => <option key={s} value={s}>{s}</option>)}
+                    <select className="status-select" value={o.statut} onChange={e => handleStatutChange(o.id, e.target.value as OffreStatut)} style={{ background: statutColors[o.statut].bg, color: statutColors[o.statut].color }}>
+                      {statutOptions.map(s => <option key={s}>{s}</option>)}
                     </select>
                   </td>
+                  <td style={{ whiteSpace: 'nowrap', fontSize: 'var(--text-xs)', color: 'var(--color-gray-500)' }}>{o.dernActivite}</td>
                   <td>
-                    {o.statut === 'Gagnée' && (
-                      <button
-                        className="btn btn-sm btn-success"
-                        onClick={() => handleConvertToProject(o)}
-                        disabled={convertingId === o.id}
-                        title="Convertir en projet"
-                      >
-                        {convertingId === o.id ? 'Conversion…' : <><ArrowRightCircle size={14} /> Convertir en projet</>}
-                      </button>
-                    )}
+                    <div style={{ display: 'flex', gap: 4 }}>
+                      <button className="btn btn-ghost btn-sm" onClick={() => startEdit(o)} title="Éditer">✏️</button>
+                      {o.statut === 'Gagnée' && (
+                        <button className="btn btn-sm" onClick={() => handleConvert(o)} disabled={convertingId === o.id} style={{ background: 'var(--egis-green-500)', color: 'white', fontSize: 'var(--text-xs)' }} title="Convertir en projet">
+                          {convertingId === o.id ? '…' : <><ArrowRightCircle size={12} /> Projet</>}
+                        </button>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -286,13 +206,5 @@ export default function Offres() {
         </div>
       </div>
     </div>
-  );
-}
-
-function FolderOpen(props: React.SVGProps<SVGSVGElement> & { size?: number }) {
-  return (
-    <svg width={props.size || 24} height={props.size || 24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-      <path d="M6 14l1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2" />
-    </svg>
   );
 }
