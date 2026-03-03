@@ -10,21 +10,21 @@ dev:
 
 ## Expose the app via ngrok (Docker)
 expose:
-	@sudo docker stop ngrok 2>/dev/null || true
-	@sudo docker rm ngrok 2>/dev/null || true
-	sudo docker run --net=host -it --name ngrok \
+	@docker stop ngrok 2>/dev/null || true
+	@docker rm ngrok 2>/dev/null || true
+	docker run --net=host -it --name ngrok \
 		-e NGROK_AUTHTOKEN=$(NGROK_TOKEN) \
 		ngrok/ngrok:latest http --url=$(NGROK_URL) $(APP_PORT)
 
 ## Stop the ngrok tunnel
 expose-stop:
-	@sudo docker stop ngrok 2>/dev/null || true
-	@sudo docker rm ngrok 2>/dev/null || true
+	@docker stop ngrok 2>/dev/null || true
+	@docker rm ngrok 2>/dev/null || true
 	@echo "🛑  Tunnel ngrok arrêté"
 
 ## Show ngrok container logs
 expose-logs:
-	sudo docker logs -f ngrok
+	docker logs -f ngrok
 
 ## Show available commands
 help:
