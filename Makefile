@@ -8,8 +8,10 @@ NGROK_URL   := womanly-modesta-gnathic.ngrok-free.dev
 dev:
 	npx vite --host 0.0.0.0 --port $(APP_PORT)
 
-## Expose the app via ngrok
+## Expose the app via ngrok (kills previous session first)
 expose:
+	@pkill -f "ngrok http" 2>/dev/null || true
+	@sleep 1
 	npx ngrok http --authtoken=$(NGROK_TOKEN) --url=$(NGROK_URL) $(APP_PORT)
 
 ## Show available commands
