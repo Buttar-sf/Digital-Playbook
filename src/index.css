@@ -1,0 +1,65 @@
+@import "./tokens.css";
+
+/* ═══════════════════════════════════════════════════════════════
+   GLOBAL RESET & BASE STYLES
+   ═══════════════════════════════════════════════════════════════ */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-family);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  color: var(--color-gray-900);
+  background: var(--color-gray-50);
+  min-height: 100vh;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+a {
+  color: var(--color-primary-500);
+  text-decoration: none;
+}
+a:hover { text-decoration: underline; }
+
+button, input, select, textarea {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+h1 { font-size: var(--text-3xl); font-weight: var(--weight-bold); line-height: var(--leading-tight); }
+h2 { font-size: var(--text-2xl); font-weight: var(--weight-semibold); line-height: var(--leading-tight); }
+h3 { font-size: var(--text-xl); font-weight: var(--weight-semibold); line-height: var(--leading-tight); }
+h4 { font-size: var(--text-lg); font-weight: var(--weight-medium); line-height: var(--leading-tight); }
+
+code {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  background: var(--color-gray-100);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-gray-300); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-gray-400); }

@@ -1,0 +1,131 @@
+/* ═══════════════════════════════════════════════════════════════
+   DESIGN TOKENS — Egis Digital Standards Assistant
+   Brand colors extracted from Egis logo and BPMN documents.
+   Egis green, dark charcoal, light grays.
+   Spacing multiples of 4 px. AA contrast minimum.
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Egis Brand Palette ── */
+  --egis-green-50: #f1f9e8;
+  --egis-green-100: #dff0cc;
+  --egis-green-200: #c5e4a0;
+  --egis-green-300: #a8d66e;
+  --egis-green-400: #8dc63f;
+  --egis-green-500: #72a832;
+  --egis-green-600: #5a8a28;
+  --egis-green-700: #456c1f;
+  --egis-green-800: #314e17;
+  --egis-green-900: #1e3310;
+
+  /* ── Neutrals ── */
+  --color-white: #ffffff;
+  --color-gray-50: #f8f9fa;
+  --color-gray-100: #f1f3f5;
+  --color-gray-200: #e9ecef;
+  --color-gray-300: #dee2e6;
+  --color-gray-400: #ced4da;
+  --color-gray-500: #adb5bd;
+  --color-gray-600: #6c757d;
+  --color-gray-700: #495057;
+  --color-gray-800: #343a40;
+  --color-gray-900: #212529;
+
+  /* ── Primary = Egis Green ── */
+  --color-primary-50: var(--egis-green-50);
+  --color-primary-100: var(--egis-green-100);
+  --color-primary-200: var(--egis-green-200);
+  --color-primary-300: var(--egis-green-300);
+  --color-primary-400: var(--egis-green-400);
+  --color-primary-500: var(--egis-green-500);
+  --color-primary-600: var(--egis-green-600);
+  --color-primary-700: var(--egis-green-700);
+  --color-primary-800: var(--egis-green-800);
+  --color-primary-900: var(--egis-green-900);
+
+  /* ── BPMN Role Colors (from Egis BPMN diagram) ── */
+  --role-responsable-ao: #f5d033;
+  --role-referent-ao: #ff6699;
+  --role-bim-manager: #00cc66;
+  --role-sig-manager: #00cc66;
+  --role-chef-projet: #3399ff;
+  --role-chef-discipline: #b380ff;
+
+  /* ── Semantic: Status ── */
+  --color-wip: #6c757d;
+  --color-wip-bg: #f1f3f5;
+  --color-shared: #2b6cb0;
+  --color-shared-bg: #e8f4fd;
+  --color-published: #2f855a;
+  --color-published-bg: #e6ffed;
+  --color-archive: #9c6d22;
+  --color-archive-bg: #fef3cd;
+
+  /* ── Semantic: Feedback ── */
+  --color-success: #2f855a;
+  --color-success-bg: #e6ffed;
+  --color-warning: #c05621;
+  --color-warning-bg: #fffbeb;
+  --color-error: #c53030;
+  --color-error-bg: #fff5f5;
+  --color-info: #2b6cb0;
+  --color-info-bg: #e8f4fd;
+
+  /* ── Typography ── */
+  --font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", "Consolas", monospace;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.8125rem;
+  --text-base: 0.875rem;
+  --text-md: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+
+  --leading-tight: 1.25;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.75;
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  /* ── Spacing (multiples of 4) ── */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+  --sp-10: 40px;
+  --sp-12: 48px;
+  --sp-16: 64px;
+
+  /* ── Layout ── */
+  --sidebar-width: 272px;
+  --topbar-height: 56px;
+
+  /* ── Borders & Radius ── */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+  --border-color: var(--color-gray-200);
+
+  /* ── Shadows ── */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px rgba(0,0,0,0.07);
+  --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+
+  /* ── Transitions ── */
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms ease;
+
+  /* ── Focus (Egis green) ── */
+  --focus-ring: 0 0 0 3px rgba(141, 198, 63, 0.4);
+}
